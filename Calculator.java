@@ -7,7 +7,9 @@ public class Calculator {
 
         //calculator variables
         int value1 = 0;
-        int value2;
+        int value2 = 0;
+        boolean operationPressed = false;
+        int currentOperation; // 1 = add, 2 = minus, 3 = multiply, 4 = divide
         JFrame frame;
         JLabel displayLabel;
 
@@ -54,7 +56,7 @@ public class Calculator {
         frame.add(zeroButton.getObject());
 
         // adds button functionality
-        zeroButton.getObject().addActionListener(e -> zeroPressed());
+        zeroButton.getObject().addActionListener(e -> numberPressed(0));
         oneButton.getObject().addActionListener(e -> numberPressed(1));
         twoButton.getObject().addActionListener(e -> numberPressed(2));
         threeButton.getObject().addActionListener(e -> numberPressed(3));
@@ -78,6 +80,10 @@ public class Calculator {
         frame.add(divideButton.getObject());
 
         // adds operation button functionality
+        addButton.getObject().addActionListener(e -> addPressed());
+        minusButton.getObject().addActionListener(e -> minusPressed());
+        multiplyButton.getObject().addActionListener(e -> multiplyPressed());
+        divideButton.getObject().addActionListener(e -> dividePressed());
 
         // creates a decimal button
         DecimalButton decimalButton = new DecimalButton(225, 625);
@@ -94,24 +100,82 @@ public class Calculator {
         frame.add(equalsButton.getObject());
 
         //adds equals button functionality
+        equalsButton.getObject().addActionListener(e -> equalsPressed());
     }
 
-    public void updateValue1() {
-        displayLabel.setText(String.valueOf(value1));
-    }
-
-    public void zeroPressed() {
-        if (this.value1 != 0) {
-            value1 = value1 * 10;
+    // updates the display label
+    public void updateDisplayLabel() {
+        if (operationPressed == false) {
+            displayLabel.setText(String.valueOf(value1));
         }
-        updateValue1();
+        else {
+            displayLabel.setText(String.valueOf(value2));
+        }
     }
 
+    // handles when a number button is pressed
     public void numberPressed(int x) {
-        value1 = (value1 * 10) + x;
-        updateValue1();
+        if (operationPressed == false) {
+            value1 = (value1 * 10) + x;
+            updateDisplayLabel();
+        }
+        else {
+            value2 = (value2 * 10) + x;
+            updateDisplayLabel();
+        }
     }
 
+    // handles when an operation is pressed
+    public void operationPressed() {
+        operationPressed = true;
+    }
+
+    // handles when "add" is pressed
+    public void addPressed() {
+        operationPressed();
+        currentOperation = 1;
+    }
+
+    // handles when "add" is pressed
+    public void minusPressed() {
+        operationPressed();
+        currentOperation = 2;
+    }
+
+    // handles when "add" is pressed
+    public void multiplyPressed() {
+        operationPressed();
+        currentOperation = 3;
+    }
+
+    // handles when "add" is pressed
+    public void dividePressed() {
+        operationPressed();
+        currentOperation = 4;
+    }
+
+    // handles when equals is pressed
+    public void equalsPressed() {
+        if (operationPressed == true) {
+            if (currentOperation == 1) {
+                value1 = value1 + value2;
+            }
+            else if (currentOperation == 2) {
+                value1 = value1 - value2;
+            }
+            else if (currentOperation == 3) {
+                value1 = value1 * value2;
+            }
+            else if (currentOperation == 4) {
+                value1 = value1 / value2; // NEED TO IMPLEMENT DOUBLE, NOT INT DIVISION
+            }
+        }
+        operationPressed = false;
+        updateDisplayLabel();
+        value2 = 0;
+    }
+
+    // main
     public static void main(String[] args) {
         Calculator calc = new Calculator();
     }
